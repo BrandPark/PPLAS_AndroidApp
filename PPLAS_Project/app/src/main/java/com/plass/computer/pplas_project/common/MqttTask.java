@@ -54,7 +54,12 @@ public class MqttTask {
                     Log.e("Connect_success", "Success");
 
                     try {
-                        mqttAndroidClient.subscribe("user/"+authority+"/"+userID, 0);   //  user/"authority"/"userID"로 subscribe
+                        if(authority.equals("patient")){        //환자로 로그인 시
+                            mqttAndroidClient.subscribe("user/"+authority+"/"+userID, 0);   //  user/patient/id 로 subscribe
+                        } else if(authority.equals("ems")){
+                            mqttAndroidClient.subscribe("user/"+authority, 0);   //  user/ems"로 subscribe
+                        }
+
 
                         /*if(authority.equals("patient")){                            //환자로 mqttConnect시(응급상황 발생 시) 바로 publish
                             mqttAndroidClient.publish("user/ems",mqttMessage.getBytes(),0,false);
@@ -89,10 +94,10 @@ public class MqttTask {
 
                     String msg = new String(message.getPayload());
 
-                    if(topic.contains("user/ems")){     //구조대원으로서 환자의 메시지를 받을 때
+                    if(topic.equals("user/ems")){     //구조대원으로서 환자의 메시지를 받을 때
                         //리스트 뷰에 추가 하는 것을 만들 예정.
                         Log.e("mqttMessage","receive patientMessage");
-                    } else if(topic.equals("user/patient"+userID)){     //환자로서 구조대원의 call Message를 받을 때
+                    } else if(topic.equals("user/patient/"+userID)){     //환자로서 구조대원의 call Message를 받을 때
                         Log.e("mqttMessage","receive emsMessage");
                     }
 

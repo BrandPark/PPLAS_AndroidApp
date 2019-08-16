@@ -3,6 +3,7 @@ package com.plass.computer.pplas_project.Ems;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -46,7 +47,8 @@ public class LoginEmsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 try {
-                    mqttAndroidClient.publish("user/patient"+"patient1",emsName.getBytes(),0,false);
+                    mqttAndroidClient.publish("user/patient/"+"patient1",emsName.getBytes(),0,false);
+                    Log.e("mqttMessage","ems publish");
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }

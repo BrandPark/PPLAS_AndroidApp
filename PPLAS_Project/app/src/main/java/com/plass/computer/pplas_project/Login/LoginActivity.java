@@ -85,7 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
-    public boolean checkUser(String id, String pw, int typeId){
+
+    public boolean checkUser(String id, String pw, int typeId){         //MySql에서 로그인정보 확인
         try {
             String result = "";
 
