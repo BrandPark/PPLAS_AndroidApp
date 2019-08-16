@@ -14,8 +14,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
+import com.plass.computer.pplas_project.Ems.LoginEmsActivity;
 import com.plass.computer.pplas_project.Manager.ManagerSettingActivity;
-import com.plass.computer.pplas_project.Patient.LoginActivity2;
+import com.plass.computer.pplas_project.Patient.LoginPatientActivity;
 import com.plass.computer.pplas_project.R;
 
 import com.plass.computer.pplas_project.common.CustomTask;
@@ -59,12 +60,16 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(checkUser(id, pw,typeId)){
                     if(typeId == R.id.patientType){
-                        Intent intent = new Intent(context, LoginActivity2.class);
+                        Intent intent = new Intent(context, LoginPatientActivity.class);
+                        intent.putExtra("title", id+"_login");
+                        intent.putExtra("userID",id);
                         startActivity(intent);
                         finish();
                     }
                     else if(typeId == R.id.staffType){
-                        Intent intent = new Intent(context, LoginActivity2.class);
+                        Intent intent = new Intent(context, LoginEmsActivity.class);
+                        intent.putExtra("title", id+"_login");
+                        intent.putExtra("userID",id);
                         startActivity(intent);
                         finish();
                     }
@@ -75,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }
                 }
+
             }
         });
 
@@ -87,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                 case R.id.adminType:    //어드민으로 로그인
                     result = new CustomTask().execute(id,pw,"","","","admin","login").get(); break;
                 case R.id.staffType:    //의료진으로 로그인
-                    result = new CustomTask().execute(id,pw,"","","","staff","login").get(); break;
+                    result = new CustomTask().execute(id,pw,"","","","ems","login").get(); break;
                 case R.id.patientType:    //환자로 로그인
                     result = new CustomTask().execute(id,pw,"","","","patient","login").get(); break;
             }

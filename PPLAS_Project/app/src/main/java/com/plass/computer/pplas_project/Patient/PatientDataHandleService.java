@@ -6,13 +6,32 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.plass.computer.pplas_project.Login.LoginActivity;
 import com.plass.computer.pplas_project.common.Message;
 
-public class PatientDataHandleService extends Service {
-    private PatientData pData;
+import java.util.Timer;
+import java.util.TimerTask;
 
-    public PatientDataHandleService() {
-        pData = new PatientData();
+public class PatientDataHandleService extends Service {
+
+    private PatientData pData;
+    private TimerTask timerTask;
+    private Timer timer;
+    static int counter = 0;
+
+    public PatientDataHandleService(){
+        pData = new PatientData("환자1","150","39.8","37.56653","126.9779691900000","38");
+
+        timerTask = new TimerTask(){
+            @Override
+            public void run(){
+                //밴드로부터 데이터를 가져오는 함수
+                getDataToBand();
+            }
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(timerTask,0,3000);   //실행되고 0초후에, 3초마다 실행
     }
 
     @Override
@@ -25,12 +44,13 @@ public class PatientDataHandleService extends Service {
             return PatientDataHandleService.this;
         }
     }
-    public void recievePatientData(PatientData pData){
-        this.pData = pData;
-        Log.i("data","데이터 전송 성공, 서비스 실행 확인");
+
+    public PatientData getPatientData(){
+        return pData;
     }
-    //받은 응급환자의 정보를 서버로 보냄
-    public void sendToServer(PatientData pData){
+    public String getDataToBand(){
+        String bandData = "";
+        return bandData;
     }
 
 }

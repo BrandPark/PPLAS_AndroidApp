@@ -46,6 +46,27 @@
                 android:width="200sp"
                 android:text="환자 추가"
                 android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/patientListButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20sp"
+                android:width="200sp"
+                android:text="환자 리스트"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/hospitalSettingButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20sp"
+                android:width="200sp"
+                android:text="병원 설정"
+                android:textSize="30sp" />
+
         </LinearLayout>
     </LinearLayout>
 

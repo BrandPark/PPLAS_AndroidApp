@@ -16,6 +16,7 @@ public class ManagerSettingActivity extends AppCompatActivity {
     private Intent intent;
     private Button addStaffButton;
     private Button addPatientButton;
+    private Button patientListButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class ManagerSettingActivity extends AppCompatActivity {
         stateMessageView = findViewById(R.id.stateMessageView);
         addStaffButton = findViewById(R.id.addStaffButton);
         addPatientButton = findViewById(R.id.addPatientButton);
+        patientListButton = findViewById(R.id.patientListButton);
 
         addStaffButton.setOnClickListener(onClickListener);
         addPatientButton.setOnClickListener(onClickListener);
@@ -43,10 +45,13 @@ public class ManagerSettingActivity extends AppCompatActivity {
             Intent intent = null;
             switch(v.getId()){
                 case R.id.addStaffButton:
-                    intent = new Intent(context, AddStaffActivity.class);
+                    intent = new Intent(context, AddEmsActivity.class);
                     startActivity(intent); break;
                 case R.id.addPatientButton:
                     intent = new Intent(context, AddPatientActivity.class);
+                    startActivity(intent); break;
+                case R.id.patientListButton:
+                    intent = new Intent(context, PatientListActivity.class);
                     startActivity(intent); break;
             }
 
