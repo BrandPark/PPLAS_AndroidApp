@@ -3,6 +3,10 @@ package com.plass.computer.pplas_project.common;
 import android.content.Context;
 import android.util.Log;
 
+import com.plass.computer.pplas_project.Ems.LoginEmsActivity;
+import com.plass.computer.pplas_project.Patient.EmergencyActivity;
+import com.plass.computer.pplas_project.common.PatientData;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -92,15 +96,23 @@ public class MqttTask {
 
             public void messageArrived(String topic, MqttMessage message) throws Exception {    //모든 메시지가 올때 Callback method
 
-                    String msg = new String(message.getPayload());
-
                     if(topic.equals("user/ems")){     //구조대원으로서 환자의 메시지를 받을 때
-                        //리스트 뷰에 추가 하는 것을 만들 예정.
-                        Log.e("mqttMessage","receive patientMessage");
-                    } else if(topic.equals("user/patient/"+userID)){     //환자로서 구조대원의 call Message를 받을 때
-                        Log.e("mqttMessage","receive emsMessage");
-                    }
+                        new Message().information(context, "응급상황","응급환자 발생");
+                        String dataMessage = new String(message.getPayload());
 
+                        PatientData patientData = new PatientData(dataMessage);
+
+                        ((LoginEmsActivity)(LoginEmsActivity.context)).addArrayList(patientData);
+                        ((LoginEmsActivity)(LoginEmsActivity.context)).updateListView();
+
+                    } else if(topic.equals("user/patient/"+userID)){     //환자로서 구조대원의 call Message를 받을 때
+                        //구조대의 정보를 화면에 띄운다.
+                        String emsName = new String(message.getPayload());
+                        new Message().information(context, "알림", "구조대 콜 성공, 구조대 이름 : " + emsName);
+                        Log.e("mqttMessage","receive emsMessage : emsName = "+emsName);
+
+                        ((EmergencyActivity)(EmergencyActivity.context)).responseActivityCall(emsName);
+                    }
             }
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {

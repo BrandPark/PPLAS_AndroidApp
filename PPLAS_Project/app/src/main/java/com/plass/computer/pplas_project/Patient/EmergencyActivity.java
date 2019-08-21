@@ -18,7 +18,7 @@ import org.w3c.dom.Text;
 
 public class EmergencyActivity extends AppCompatActivity {
 
-    private Context context;
+    public static Context context;
 
     private TextView illnessName;
     private TextView callStatement;
@@ -60,8 +60,14 @@ public class EmergencyActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        });
+        });;
+    }
 
+    public void responseActivityCall(String emsName){
+        Intent intent = new Intent(context, ResponseMessageActivity.class);
+       /* intent.putExtra("emsName",emsName);*/
+        startActivity(intent);
+        Log.e("responseAct","success");
     }
 
 }

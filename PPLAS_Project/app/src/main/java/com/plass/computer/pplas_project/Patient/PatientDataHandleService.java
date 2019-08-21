@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.plass.computer.pplas_project.Login.LoginActivity;
 import com.plass.computer.pplas_project.common.Message;
+import com.plass.computer.pplas_project.common.PatientData;
 
 import java.util.Timer;
 import java.util.TimerTask;

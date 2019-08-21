@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.plass.computer.pplas_project.R;
+import com.plass.computer.pplas_project.common.PatientData;
 
 public class LoginPatientActivity extends AppCompatActivity {
 
@@ -20,8 +21,6 @@ public class LoginPatientActivity extends AppCompatActivity {
     private boolean pBound = false;
 
     private Button testButton;
-
-    private PatientData pData;
 
     private String userID;
 
@@ -53,6 +52,7 @@ public class LoginPatientActivity extends AppCompatActivity {
             emsIntent.putExtra("userID",userID);
 
             startActivity(emsIntent);
+            finish();
         }
     };
 

@@ -22,11 +22,12 @@ public class CustomTask extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
         String jspUrl = "http://192.168.78.1:8080/MGJSP_Book/PPLAS/add.jsp";
+        HttpURLConnection conn=null;
         try {
             String tmp;
             URL url = new URL(jspUrl);
 
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn = (HttpURLConnection)url.openConnection();
             conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
             conn.setRequestMethod("POST");
 
@@ -49,7 +50,12 @@ public class CustomTask extends AsyncTask<String, Void, String> {
             }else{                                             //통신 에러
                 Log.i("통신결과", conn.getResponseCode()+"에러");
             }
+
         } catch (MalformedURLException e) { e.printStackTrace(); } catch(IOException e){ e.printStackTrace(); }
+        finally {
+            if(conn!=null) conn.disconnect();
+            Log.e("conn_disconnect","disconnect");
+        }
 
         return recieveMsg;
     }
