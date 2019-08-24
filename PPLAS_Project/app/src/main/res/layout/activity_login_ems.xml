@@ -19,12 +19,6 @@
             android:text="응급환자 리스트"
             android:textSize="36sp" />
 
-        <Button
-            android:id="@+id/sendMessageTest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="send message test" />
-
         <ListView
             android:id="@+id/patientList"
             android:layout_width="match_parent"

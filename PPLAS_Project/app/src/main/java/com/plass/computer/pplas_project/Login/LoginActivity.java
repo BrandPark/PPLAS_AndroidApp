@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -31,29 +32,40 @@ public class LoginActivity extends AppCompatActivity {
     private RadioGroup userType;    //유저타입, 라디오그룹
     private EditText userID;
     private EditText userPW;
-    private CheckBox saveIDChcekBox;
+    private CheckBox saveIDCheckBox;
     private Button loginButton;
-    private Button changePWButton;
-
-    private Message message;
+    private SharedPreferences pref;
+    private boolean saveCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         context = this;
-        message = new Message();
 
         userType = findViewById(R.id.userType);
         userID = findViewById(R.id.userID);
         userPW = findViewById(R.id.userPW);
-        saveIDChcekBox = findViewById(R.id.saveIDCheckBox);
+        saveIDCheckBox = findViewById(R.id.saveIDCheckBox);
         loginButton = findViewById(R.id.loginButton);
-        changePWButton = findViewById(R.id.changePWButton);
+
+        pref = getSharedPreferences("login_info",0);        //로그인 정보를 저장할 프리퍼런스 객체
+        saveCheck = false;
+
+        if(savedInstanceState==null){
+            String savedID = pref.getString("userID","");
+            int selectedType = pref.getInt("userType",R.id.patientType);
+            userID.setText(savedID);
+            userType.check(selectedType);
+
+        }
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveLoginInfo();
+                saveCheck = true;
+
                 String id = userID.getText().toString();
                 String pw = userPW.getText().toString();
                 int typeId = userType.getCheckedRadioButtonId();
@@ -66,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }
-                    else if(typeId == R.id.staffType){
+                    else if(typeId == R.id.emsType){
                         Intent intent = new Intent(context, LoginEmsActivity.class);
                         intent.putExtra("title", id+"_login");
                         intent.putExtra("userID",id);
@@ -74,16 +86,14 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }
                     else{
-                        message.information(context, "알림", "관리자 로긴 성공");
+                        Message.information(context, "알림", "관리자 로긴 성공");
                         Intent intent = new Intent(context, ManagerSettingActivity.class);
                         startActivity(intent);
                         finish();
                     }
                 }
-
             }
         });
-
     }
 
     public boolean checkUser(String id, String pw, int typeId){         //MySql에서 로그인정보 확인
@@ -93,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
             switch(typeId){
                 case R.id.adminType:    //어드민으로 로그인
                     result = new CustomTask().execute(id,pw,"","","","admin","login").get(); break;
-                case R.id.staffType:    //의료진으로 로그인
+                case R.id.emsType:    //의료진으로 로그인
                     result = new CustomTask().execute(id,pw,"","","","ems","login").get(); break;
                 case R.id.patientType:    //환자로 로그인
                     result = new CustomTask().execute(id,pw,"","","","patient","login").get(); break;
@@ -103,12 +113,12 @@ public class LoginActivity extends AppCompatActivity {
                 return true;
             }
             else if(result.equals("wrongPW")) {
-                message.information(context, "알림", "비밀번호 틀림!");
+                Message.information(context, "알림", "비밀번호 틀림!");
                 userPW.setText("");
                 return false;
             }
             else if(result.equals("wrongID")) {
-                message.information(context, "알림", "해당 계정이 존재하지 않음!");
+                Message.information(context, "알림", "해당 계정이 존재하지 않음!");
                 userID.setText("");
                 userPW.setText("");
                 return false;
@@ -116,5 +126,21 @@ public class LoginActivity extends AppCompatActivity {
         } catch (InterruptedException e) { e.printStackTrace(); } catch (ExecutionException e) { e.printStackTrace(); }
 
         return false;
+    }
+
+    public void saveLoginInfo(){                //로그인정보를 저장하는 함수
+        SharedPreferences.Editor editor = pref.edit();
+
+        if(saveIDCheckBox.isChecked()){     //아이디 저장 체크박스가 체크되어있는 경우
+            String id = userID.getText().toString();
+            int selectedType = userType.getCheckedRadioButtonId();
+            editor.putString("userID",id);
+            editor.putInt("userType",selectedType);
+        } else {                //체크가 안되어있는경우
+            editor.putString("userID","");
+            editor.putInt("userType",R.id.patientType);
+        }
+
+        editor.commit();
     }
 }

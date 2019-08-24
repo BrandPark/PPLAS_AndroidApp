@@ -45,6 +45,7 @@
                 android:id="@+id/callStatement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20sp"
                 android:gravity="center"
                 android:text="callStatmenet"
                 android:textColor="@android:color/background_dark"
@@ -54,7 +55,8 @@
                 android:id="@+id/callTestButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="call Test" />
+                android:text="재 호출"
+                android:textSize="30sp" />
 
         </LinearLayout>
 

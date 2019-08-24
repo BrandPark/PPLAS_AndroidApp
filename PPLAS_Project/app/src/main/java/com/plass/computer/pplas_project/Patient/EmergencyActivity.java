@@ -27,7 +27,7 @@ public class EmergencyActivity extends AppCompatActivity {
     private MqttTask mqttTask;
     private MqttAndroidClient mqttAndroidClient;
     private String mqttMessage;
-    private String userID;
+    private String patientID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +37,9 @@ public class EmergencyActivity extends AppCompatActivity {
         context = this;
 
         mqttMessage = getIntent().getStringExtra("mqttMessage"); //환자정보
-        userID = getIntent().getStringExtra("userID");
+        patientID = getIntent().getStringExtra("patientID");
 
-        mqttTask = new MqttTask(context,mqttMessage,userID,"patient");  //MqttAndroidClient객체생성, mqttConnect, mqttSetCallback
+        mqttTask = new MqttTask(context,mqttMessage,patientID,"patient");  //MqttAndroidClient객체생성, mqttConnect, mqttSetCallback
         mqttAndroidClient = mqttTask.getMqttClient();
 
         illnessName = findViewById(R.id.illnessName);
@@ -65,7 +65,7 @@ public class EmergencyActivity extends AppCompatActivity {
 
     public void responseActivityCall(String emsName){
         Intent intent = new Intent(context, ResponseMessageActivity.class);
-       /* intent.putExtra("emsName",emsName);*/
+        intent.putExtra("emsName",emsName);
         startActivity(intent);
         Log.e("responseAct","success");
     }

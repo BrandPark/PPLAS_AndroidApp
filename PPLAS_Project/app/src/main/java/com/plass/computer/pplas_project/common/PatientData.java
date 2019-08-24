@@ -6,31 +6,27 @@ package com.plass.computer.pplas_project.common;
 
 public class PatientData {
 
+    private String mqttMessage;
     private String patientName;
     private String patientID;
-    private String patientHeartbeat;
+    private String patientPulse;
     private String patientTemperature;
     private String latitude;
     private String longitude;
     private String altitude;
     private String patientLocation;
 
-    public PatientData(String name, String heartbeat, String temperature, String latitude,String longitude, String altutude){
-        this.patientName = "홍길동";
-        this.patientID = "patient1";
-        this.patientHeartbeat = "150";
-        this.patientTemperature = "39.0";
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.altitude = altitude;
-        this.patientLocation = latitude + ":" + longitude + ":" + altutude;
-    }
-    public PatientData(String message){
-        String [] data = message.split("%");
+    private boolean check;
 
-        this.patientName =  data[0];
-        this.patientID = data[1];
-        this.patientHeartbeat = data[2];
+    public PatientData(String mqttMessage){
+
+        this.mqttMessage = mqttMessage;
+
+        String [] data = mqttMessage.split("%");        //아이디%이름%심박%체온%위치
+
+        this.patientID = data[0];
+        this.patientName =  data[1];
+        this.patientPulse = data[2];
         this.patientTemperature = data[3];
         this.patientLocation = data[4];
 
@@ -38,13 +34,15 @@ public class PatientData {
         this.latitude = location[0];
         this.longitude = location[1];
         this.altitude = location[2];
+
+        this.check = false;
     }
+
     public String getMqttMessage(){
-        String msg = patientName+"%"+patientID+"%"+patientHeartbeat+"%"+patientTemperature+"%"+patientLocation;    // 이름 / 아이디 / 심박수 / 체온 / 위치
-        return msg;
+        return mqttMessage;
     }
-    public String getHeartbeat(){
-        return patientHeartbeat;
+    public String getPulse(){
+        return patientPulse;
     }
     public String getTemperature(){
         return patientTemperature;
@@ -54,5 +52,11 @@ public class PatientData {
     }
     public String getID(){
         return patientID;
+    }
+    public void setCheck(){
+        this.check = true;
+    }
+    public boolean getCheck(){
+        return check;
     }
 }

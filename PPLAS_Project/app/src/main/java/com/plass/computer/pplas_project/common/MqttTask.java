@@ -60,14 +60,11 @@ public class MqttTask {
                     try {
                         if(authority.equals("patient")){        //환자로 로그인 시
                             mqttAndroidClient.subscribe("user/"+authority+"/"+userID, 0);   //  user/patient/id 로 subscribe
+                            mqttAndroidClient.publish("user/ems",mqttMessage.getBytes(),0,false);   //EmergencyActivity 실행시 바로 publish
                         } else if(authority.equals("ems")){
                             mqttAndroidClient.subscribe("user/"+authority, 0);   //  user/ems"로 subscribe
                         }
 
-
-                        /*if(authority.equals("patient")){                            //환자로 mqttConnect시(응급상황 발생 시) 바로 publish
-                            mqttAndroidClient.publish("user/ems",mqttMessage.getBytes(),0,false);
-                        }*/
 
 
                     } catch (MqttException e) {
@@ -98,9 +95,9 @@ public class MqttTask {
 
                     if(topic.equals("user/ems")){     //구조대원으로서 환자의 메시지를 받을 때
                         new Message().information(context, "응급상황","응급환자 발생");
-                        String dataMessage = new String(message.getPayload());
+                        String mqttMessage = new String(message.getPayload());      //아이디%이름%맥%체온%위치
 
-                        PatientData patientData = new PatientData(dataMessage);
+                        PatientData patientData = new PatientData(mqttMessage);
 
                         ((LoginEmsActivity)(LoginEmsActivity.context)).addArrayList(patientData);
                         ((LoginEmsActivity)(LoginEmsActivity.context)).updateListView();
@@ -108,8 +105,6 @@ public class MqttTask {
                     } else if(topic.equals("user/patient/"+userID)){     //환자로서 구조대원의 call Message를 받을 때
                         //구조대의 정보를 화면에 띄운다.
                         String emsName = new String(message.getPayload());
-                        new Message().information(context, "알림", "구조대 콜 성공, 구조대 이름 : " + emsName);
-                        Log.e("mqttMessage","receive emsMessage : emsName = "+emsName);
 
                         ((EmergencyActivity)(EmergencyActivity.context)).responseActivityCall(emsName);
                     }

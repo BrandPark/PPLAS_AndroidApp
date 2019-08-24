@@ -2,16 +2,20 @@ package com.plass.computer.pplas_project.Ems;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.plass.computer.pplas_project.common.Message;
 import com.plass.computer.pplas_project.common.PatientData;
 import com.plass.computer.pplas_project.R;
 import com.plass.computer.pplas_project.common.CustomTask;
@@ -33,7 +37,6 @@ public class LoginEmsActivity extends AppCompatActivity {
     private ListView patientList;
     private ArrayList<PatientData> patientArray;
     private PatientAdapter patientAdapter;
-    private Button sendMessageTest;
 
     private String patientID;
 
@@ -51,39 +54,40 @@ public class LoginEmsActivity extends AppCompatActivity {
         patientAdapter = new PatientAdapter(context, patientArray);
         patientList.setAdapter(patientAdapter);
 
-
-
-        sendMessageTest = findViewById(R.id.sendMessageTest);
-
         mqttTask = new MqttTask(context,"",emsID,"ems");    //MqttAndroidClient객체생성, mqttConnect, mqttSetCallback
         mqttAndroidClient = mqttTask.getMqttClient();
 
         patientList.setAdapter(patientAdapter);
-        Log.e("adapter_add_sucess","success");
-
-
-
-        sendMessageTest.setOnClickListener(new View.OnClickListener(){              //환자의 안드로이드폰으로 message send.
-            @Override
-            public void onClick(View v){
-                try {
-                    String result = new CustomTask().execute(emsID,"","","","","","searchEmsName").get();
-
-                    if(result.contains("emsName=")){
-                        String emsName = (result.split("="))[1];
-                        mqttAndroidClient.publish("user/patient/"+"patient1", emsName.getBytes(),0,false);          //여기서 patient1은 아이디인데 mqtt메시지로 받을 예정
-                        Log.e("mqttMessage","ems publish");
-                    }
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode ==12345 && resultCode==RESULT_OK){   //수락한 경우
+            try {
+                String result = new CustomTask().execute(emsID,"","","","","","searchName").get();
+
+                if(result.contains("findName=")){
+                    String emsName = (result.split("="))[1];
+                    mqttAndroidClient.publish("user/patient/"+"patient1", (emsName+"/accept").getBytes(),0,false);          //여기서 patient1은 아이디인데 mqtt메시지로 받을 예정
+                }
+            } catch (MqttException e) {e.printStackTrace();} catch (InterruptedException e) {e.printStackTrace();} catch (ExecutionException e) {e.printStackTrace();}
+
+        } else if(requestCode == 12345 && resultCode==RESULT_CANCELED){
+
+            int arrayPosition = data.getIntExtra("arrayPosition",-1);       //리스트에서 지우기
+
+            if(arrayPosition!=-1){
+                patientArray.remove(arrayPosition);
+                updateListView();
+            } else{
+                Message.information(context,"경고","ArrayPosition오류");
+            }
+            // deny메세지 publish
+        } else{
+            Message.information(context,"경고","액티비티 데이터교환 오류");
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     //----------------------------------------------------------MqttTask에서 호출할 메소드 들 -----------------------------------------//
     public void addArrayList(PatientData patientData){  //메세지로 받은 환자정보를 Array에 추가하는 메소드
         patientArray.add(patientData);
@@ -94,15 +98,6 @@ public class LoginEmsActivity extends AppCompatActivity {
         patientList.setAdapter(patientAdapter);
     }
 
-    //------------------------------------------------------------------------------------------------------//
-
-    public void publishToPatient(String patientID, String emsName){     //실제로 DetailViewActivity에서 퍼블리시 할 예정이기 때문에 만들어놓은 메소드.
-        try {
-            mqttAndroidClient.publish("user/patient/"+patientID, "ems move!!".getBytes(),0,false);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
 
     //---------------------------------------------------어댑터 클래스----------------------------------------------
     class PatientAdapter extends BaseAdapter{
@@ -141,22 +136,30 @@ public class LoginEmsActivity extends AppCompatActivity {
             arriveTime.setText("도착시간");
 
             Button detailButton = (Button)convertView.findViewById(R.id.detailButton);
-            detailButton.setOnClickListener(new DetailButtonListener(patientData));
+            detailButton.setOnClickListener(new DetailButtonListener(patientData,position,convertView));
             return convertView;
         }
+    }
 
-        class DetailButtonListener implements View.OnClickListener{
-            private PatientData patientData;
+    //--------------------------------------------상세보기 버튼 리스너 클래스--------------------------------------
+    class DetailButtonListener implements View.OnClickListener{
+        private PatientData patientData;
+        private int position;
+        private LinearLayout view;
 
-            public DetailButtonListener(PatientData patientData) {
-                this.patientData = patientData;
-            }
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(context, DetailViewActivity.class);
-                intent.putExtra("patientData",patientData.getMqttMessage());
-                startActivity(intent);
-            }
+        public DetailButtonListener(PatientData patientData, int position, View view) {
+            this.patientData = patientData;
+            this.position = position;
+
+        }
+        @Override
+        public void onClick(View v){
+
+            Intent intent = new Intent(context, DetailViewActivity.class);
+            intent.putExtra("patientData",patientData.getMqttMessage());
+            intent.putExtra("arrayPosition",position);
+
+            startActivityForResult(intent,12345);
         }
     }
 }

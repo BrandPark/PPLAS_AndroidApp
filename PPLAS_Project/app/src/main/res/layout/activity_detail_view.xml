@@ -55,7 +55,7 @@
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/heartbeat"
+                    android:id="@+id/pulse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10sp"
@@ -87,19 +87,19 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/acceptButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20sp"
                     android:layout_weight="1"
-                    android:text="응소" />
+                    android:text="수락" />
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/denyButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="취소" />
+                    android:text="거절" />
+
             </LinearLayout>
 
         </LinearLayout>
