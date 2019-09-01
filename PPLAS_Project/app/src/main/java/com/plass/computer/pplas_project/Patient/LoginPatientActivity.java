@@ -14,8 +14,12 @@ import android.widget.TextView;
 
 import com.plass.computer.pplas_project.R;
 import com.plass.computer.pplas_project.common.CustomTask;
+import com.plass.computer.pplas_project.common.MqttTask;
 
-import java.util.TimerTask;
+
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import java.util.concurrent.ExecutionException;
 
 public class LoginPatientActivity extends AppCompatActivity {
@@ -25,7 +29,6 @@ public class LoginPatientActivity extends AppCompatActivity {
     private BandData bandData;
     private boolean pBound = false;
 
-    private Button testButton;
     private TextView nameView;
     private TextView pulseView;
     private TextView temperatureView;
@@ -33,7 +36,8 @@ public class LoginPatientActivity extends AppCompatActivity {
     private String patientID;
     private String patientName;
 
-
+    private MqttTask mqttTask;
+    private MqttAndroidClient mqttAndroidClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +47,14 @@ public class LoginPatientActivity extends AppCompatActivity {
 
         setTitle(getIntent().getStringExtra("title"));
 
-        testButton = findViewById(R.id.testButton); //응급상황 발생 test버튼
         nameView = findViewById(R.id.patientName);
         pulseView = findViewById(R.id.pulse);
         temperatureView = findViewById(R.id.temperature);
 
-        /*testButton.setOnClickListener(testListener);*/
-
         patientID = getIntent().getStringExtra("userID");       //환자 아이디
+
+        mqttTask = new MqttTask(context,patientID,"patient");
+        mqttAndroidClient = mqttTask.getMqttClient();
 
         try {
             String result = new CustomTask().execute(patientID,"","","","","","searchName").get();
@@ -61,24 +65,6 @@ public class LoginPatientActivity extends AppCompatActivity {
         } catch (InterruptedException e) {e.printStackTrace();} catch (ExecutionException e) {e.printStackTrace();}
     }
 
-   /* View.OnClickListener testListener = new View.OnClickListener(){     //응급상황 발생시 스마트 밴드로 부터 응급상황발생을 감지하는 버튼을 재현
-        @Override
-        public void onClick(View v){
-            emergencyActivityStart();
-        }
-    };*/
-
-    public void emergencyActivityStart() {
-
-        Intent emsIntent = new Intent(context, EmergencyActivity.class);    //구조대 대기 화면 띄움
-
-        String mqttMessage = patientID + "%" + patientName + "%" + bandData.getBandMessage();   //id%이름%맥박%체온%위치
-
-        emsIntent.putExtra("mqttMessage",mqttMessage);
-        emsIntent.putExtra("patientID",patientID);
-
-        startActivity(emsIntent);
-    }
 
     //////////////////////////////////////////////서비스///////////////////////////////////////////
     ServiceConnection mConn = new ServiceConnection(){
@@ -116,6 +102,13 @@ public class LoginPatientActivity extends AppCompatActivity {
         if(pBound){
             unbindService(mConn);
             pBound = false;
+        }
+    }
+    public void publishToServer(String message){                //서비스에서 호출할 메소드
+        try {
+            mqttAndroidClient.publish("server/patient/"+patientID,message.getBytes(),0,false);
+        } catch (MqttException e) {
+            e.printStackTrace();
         }
     }
 

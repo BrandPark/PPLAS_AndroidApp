@@ -15,7 +15,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
-import com.plass.computer.pplas_project.Ems.LoginEmsActivity;
 import com.plass.computer.pplas_project.Manager.ManagerSettingActivity;
 import com.plass.computer.pplas_project.Patient.LoginPatientActivity;
 import com.plass.computer.pplas_project.R;
@@ -35,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private CheckBox saveIDCheckBox;
     private Button loginButton;
     private SharedPreferences pref;
-    private boolean saveCheck;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,21 +49,19 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
 
         pref = getSharedPreferences("login_info",0);        //로그인 정보를 저장할 프리퍼런스 객체
-        saveCheck = false;
 
         if(savedInstanceState==null){
             String savedID = pref.getString("userID","");
             int selectedType = pref.getInt("userType",R.id.patientType);
             userID.setText(savedID);
             userType.check(selectedType);
-
+            saveIDCheckBox.setChecked(pref.getBoolean("saveCheck",false));
         }
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveLoginInfo();
-                saveCheck = true;
 
                 String id = userID.getText().toString();
                 String pw = userPW.getText().toString();
@@ -73,13 +70,6 @@ public class LoginActivity extends AppCompatActivity {
                 if(checkUser(id, pw,typeId)){
                     if(typeId == R.id.patientType){
                         Intent intent = new Intent(context, LoginPatientActivity.class);
-                        intent.putExtra("title", id+"_login");
-                        intent.putExtra("userID",id);
-                        startActivity(intent);
-                        finish();
-                    }
-                    else if(typeId == R.id.emsType){
-                        Intent intent = new Intent(context, LoginEmsActivity.class);
                         intent.putExtra("title", id+"_login");
                         intent.putExtra("userID",id);
                         startActivity(intent);
@@ -103,8 +93,6 @@ public class LoginActivity extends AppCompatActivity {
             switch(typeId){
                 case R.id.adminType:    //어드민으로 로그인
                     result = new CustomTask().execute(id,pw,"","","","admin","login").get(); break;
-                case R.id.emsType:    //의료진으로 로그인
-                    result = new CustomTask().execute(id,pw,"","","","ems","login").get(); break;
                 case R.id.patientType:    //환자로 로그인
                     result = new CustomTask().execute(id,pw,"","","","patient","login").get(); break;
             }
@@ -136,11 +124,13 @@ public class LoginActivity extends AppCompatActivity {
             int selectedType = userType.getCheckedRadioButtonId();
             editor.putString("userID",id);
             editor.putInt("userType",selectedType);
+            editor.putBoolean("saveCheck",true);
         } else {                //체크가 안되어있는경우
             editor.putString("userID","");
             editor.putInt("userType",R.id.patientType);
-        }
+            editor.putBoolean("saveCheck",false);
 
+        }
         editor.commit();
     }
 }

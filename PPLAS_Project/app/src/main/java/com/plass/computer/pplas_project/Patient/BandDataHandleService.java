@@ -18,18 +18,13 @@ public class BandDataHandleService extends Service {
     public BandDataHandleService(){
         bandData = BandData.getInstance(getDataFromBand()); //BandData객체 생성
 
-        timerTask = new TimerTask(){
+        timerTask = new TimerTask(){        //주기적으로 서버로 데이터를 보낸다.
             @Override
             public void run(){
                 bandData.updateBandData(getDataFromBand());
-                if(checkEmergency()){       //응급상황 일 시
-                    /*((LoginPatientActivity)(LoginPatientActivity.context)).emergencyActivityStart();   //계속켜지는 것을 어떻게 해결 할 것인지 문제. wait?*/
-
-                }
+                //((LoginPatientActivity)LoginPatientActivity.context).publishToServer("band_data:"+bandData.getBandMessage());       //서버에 환자의ㅏ 데이터를 3초마다 전송
             }
         };
-
-
 
         Timer timer = new Timer();
         timer.schedule(timerTask,1000,3000);   //실행되고 1초후에, 3초마다 실행
@@ -54,20 +49,7 @@ public class BandDataHandleService extends Service {
 
         return bandData;
     }
-    public boolean checkEmergency(){        //응급상황을 체크하는 메소드
-        int pulse = Integer.parseInt(bandData.getPulse());
-        double temperature = Double.parseDouble(bandData.getTemperature());
-        Log.e("test","pulse,temper : "+pulse+", "+temperature);
-
-        if(temperature<35.0){       //저온
-            return true;
-        } else if(temperature>38.0) {   //고온
-            return true;
-        }
-        return true;
-    }
     public BandData getBandData(){
-
         return bandData;
     }
 

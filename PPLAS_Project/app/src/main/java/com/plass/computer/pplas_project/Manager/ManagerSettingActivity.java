@@ -27,11 +27,9 @@ public class ManagerSettingActivity extends AppCompatActivity {
         intent = getIntent();
 
         stateMessageView = findViewById(R.id.stateMessageView);
-        addStaffButton = findViewById(R.id.addStaffButton);
         addPatientButton = findViewById(R.id.addPatientButton);
         patientListButton = findViewById(R.id.patientListButton);
 
-        addStaffButton.setOnClickListener(onClickListener);
         addPatientButton.setOnClickListener(onClickListener);
     }
     protected void onStart(){
@@ -44,14 +42,8 @@ public class ManagerSettingActivity extends AppCompatActivity {
         public void onClick(View v){
             Intent intent = null;
             switch(v.getId()){
-                case R.id.addStaffButton:
-                    intent = new Intent(context, AddEmsActivity.class);
-                    startActivity(intent); break;
                 case R.id.addPatientButton:
                     intent = new Intent(context, AddPatientActivity.class);
-                    startActivity(intent); break;
-                case R.id.patientListButton:
-                    intent = new Intent(context, PatientListActivity.class);
                     startActivity(intent); break;
             }
 

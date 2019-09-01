@@ -8,12 +8,13 @@ public class PatientData {
 
     private String mqttMessage;
     private String patientName;
-    private String patientID;
+    private String patientID;             //x
     private String patientPulse;
     private String patientTemperature;
+    
     private String latitude;
     private String longitude;
-    private String altitude;
+    private String altitude;            //x
     private String patientLocation;
 
     private boolean check;

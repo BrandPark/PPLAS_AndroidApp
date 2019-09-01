@@ -3,8 +3,8 @@ package com.plass.computer.pplas_project.common;
 import android.content.Context;
 import android.util.Log;
 
-import com.plass.computer.pplas_project.Ems.LoginEmsActivity;
-import com.plass.computer.pplas_project.Patient.EmergencyActivity;
+import com.plass.computer.pplas_project.Login.LoginActivity;
+import com.plass.computer.pplas_project.Patient.LoginPatientActivity;
 import com.plass.computer.pplas_project.common.PatientData;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -24,13 +24,12 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MqttTask {
     private MqttAndroidClient mqttAndroidClient;
-    private String mqttMessage;
+
     private String userID;
     private String authority;
     private Context context;
 
-    public MqttTask(Context context,String mqttMessage,String userID, String authority){
-        this.mqttMessage = mqttMessage;
+    public MqttTask(Context context,String userID, String authority){
         this.userID = userID;
         this.authority = authority;
         this.context = context;
@@ -60,9 +59,11 @@ public class MqttTask {
                     try {
                         if(authority.equals("patient")){        //환자로 로그인 시
                             mqttAndroidClient.subscribe("user/"+authority+"/"+userID, 0);   //  user/patient/id 로 subscribe
-                            mqttAndroidClient.publish("user/ems",mqttMessage.getBytes(),0,false);   //EmergencyActivity 실행시 바로 publish
                         } else if(authority.equals("ems")){
-                            mqttAndroidClient.subscribe("user/"+authority, 0);   //  user/ems"로 subscribe
+                            String []topic = {"user/"+authority, "user/"+authority+"/"+userID};
+                            int [] qos = {0,0};
+                           // mqttAndroidClient.subscribe("user/"+authority, 0);                // user.ems 로 subscribe
+                            mqttAndroidClient.subscribe(topic,qos);
                         }
 
 
@@ -92,23 +93,24 @@ public class MqttTask {
             @Override
 
             public void messageArrived(String topic, MqttMessage message) throws Exception {    //모든 메시지가 올때 Callback method
+                String mqttMessage = new String(message.getPayload());
 
-                    if(topic.equals("user/ems")){     //구조대원으로서 환자의 메시지를 받을 때
-                        new Message().information(context, "응급상황","응급환자 발생");
-                        String mqttMessage = new String(message.getPayload());      //아이디%이름%맥%체온%위치
+                if (topic.equals("user/ems")) {     //구조대원으로서 환자의 메시지를 받을 때
+                    new Message().information(context, "응급상황", "응급환자 발생");
+                    //아이디%이름%맥%체온%위치
 
-                        PatientData patientData = new PatientData(mqttMessage);
+                    PatientData patientData = new PatientData(mqttMessage);
 
-                        ((LoginEmsActivity)(LoginEmsActivity.context)).addArrayList(patientData);
-                        ((LoginEmsActivity)(LoginEmsActivity.context)).updateListView();
+                } else if (topic.equals("user/ems/" + userID)) {
 
-                    } else if(topic.equals("user/patient/"+userID)){     //환자로서 구조대원의 call Message를 받을 때
-                        //구조대의 정보를 화면에 띄운다.
-                        String emsName = new String(message.getPayload());
+                    Message.information(context, "알림", "특정 ems호출 성공");
 
-                        ((EmergencyActivity)(EmergencyActivity.context)).responseActivityCall(emsName);
-                    }
+                } else if (topic.equals("user/patient/" + userID)) {     //환자로서 구조대원의 call Message를 받거나 로딩화면을 출력할 때
+                    //구조대의 정보를 화면에 띄운다.
+
+                }
             }
+
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
             }
