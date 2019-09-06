@@ -21,7 +21,8 @@ public class CustomTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
-        String jspUrl = "http://192.168.78.1:8080/MGJSP_Book/PPLAS/add.jsp";
+        //String jspUrl = "http://192.168.78.1:8080/MGJSP_Book/PPLAS/add.jsp";
+        String jspUrl = "http://116.126.97.126:8080/PPLAS_MQTT-WebServer/add.jsp";
         HttpURLConnection conn=null;
         try {
             String tmp;
@@ -33,8 +34,8 @@ public class CustomTask extends AsyncTask<String, Void, String> {
 
             OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
             // type: 로그인, 회원가입 구별; authority: staff, admin, patient구별
-            sendMsg = "id="+strings[0]+"&pw="+strings[1]+"&name="+strings[2]+"&resident_id="+strings[3]+"&phone="+strings[4]+
-                    "&authority="+strings[5]+"&type="+strings[6];
+            sendMsg = "accountID="+strings[0]+"&accountPassword="+strings[1]+"&accountName="+strings[2]+"&accountResidentID="+strings[3]+"&accountPhone="+strings[4]+
+                    "&accountAuthority="+strings[5]+"&accountType="+strings[6];
             osw.write(sendMsg);
             osw.flush();
 

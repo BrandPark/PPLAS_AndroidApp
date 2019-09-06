@@ -6,6 +6,7 @@ import android.content.Intent;
 
 
 import android.content.SharedPreferences;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,7 +26,7 @@ import com.plass.computer.pplas_project.common.Message;
 import java.util.concurrent.ExecutionException;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends FragmentActivity {
 
     private Context context;
     private RadioGroup userType;    //유저타입, 라디오그룹
@@ -70,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
                 if(checkUser(id, pw,typeId)){
                     if(typeId == R.id.patientType){
                         Intent intent = new Intent(context, LoginPatientActivity.class);
-                        intent.putExtra("title", id+"_login");
                         intent.putExtra("userID",id);
                         startActivity(intent);
                         finish();

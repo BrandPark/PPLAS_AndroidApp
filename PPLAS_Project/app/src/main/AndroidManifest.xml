@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +17,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@android:style/Theme.NoTitleBar">
         <activity android:name=".Login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +27,7 @@
         </activity>
 
         <service
-            android:name=".Patient.BandDataHandleService"
+            android:name=".Service.BandDataHandleService"
             android:enabled="true"
             android:exported="true" />
         <service android:name="org.eclipse.paho.android.service.MqttService" />
@@ -34,6 +36,10 @@
         <activity android:name=".Manager.ManagerSettingActivity" />
         <activity android:name=".Manager.AddPatientActivity" />
 
+        <service
+            android:name=".Service.PublishService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

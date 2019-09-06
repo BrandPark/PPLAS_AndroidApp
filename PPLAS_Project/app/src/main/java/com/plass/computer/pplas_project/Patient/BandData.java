@@ -12,7 +12,6 @@ public class BandData {
     private String location;
     private String latitude;
     private String longitude;
-    private String altitude;
     private String bandMessage;
     private static BandData bandData = null;
 
@@ -26,11 +25,17 @@ public class BandData {
         this.location = data[2];
         this.latitude = location.split(":")[0];
         this.longitude = location.split(":")[1];
-        this.altitude = location.split(":")[2];
     }
     public static BandData getInstance(String bandMessage){
         if(bandData==null){
             bandData = new BandData(bandMessage);
+        }
+        return bandData;
+    }
+    public static BandData getInstance(){
+        if(bandData==null){
+            String message = "Non-Signal%Non-Signal%Non-Signal:Non-Signal";
+            bandData = new BandData(message);
         }
         return bandData;
     }
@@ -44,7 +49,7 @@ public class BandData {
         this.location = data[2];
         this.latitude = location.split(":")[0];
         this.longitude = location.split(":")[1];
-        this.altitude = location.split(":")[2];
+
     }
     public String getBandMessage(){
         return bandMessage;
