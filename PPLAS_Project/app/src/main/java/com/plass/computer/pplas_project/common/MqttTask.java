@@ -34,7 +34,7 @@ public class MqttTask {
         this.authority = authority;
         this.context = context;
 
-        //mqttAndroidClient = new MqttAndroidClient(context, "tcp://" + "192.168.78.1" + ":1883", MqttClient.generateClientId());
+        // mqttAndroidClient = new MqttAndroidClient(context, "tcp://" + "192.168.78.1" + ":1883", MqttClient.generateClientId());
         mqttAndroidClient = new MqttAndroidClient(context, "tcp://" + "116.126.97.126" + ":1883", MqttClient.generateClientId());
         //mqttAndroidClient = new MqttAndroidClient(context, "tcp://" + "113.198.84.52" + ":1883", MqttClient.generateClientId());
 

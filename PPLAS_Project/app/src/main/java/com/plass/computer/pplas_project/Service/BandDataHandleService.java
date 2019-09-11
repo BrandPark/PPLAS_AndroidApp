@@ -39,6 +39,14 @@ public class BandDataHandleService extends Service {
     private ConnectedBluetoothThread connectedBluetoothThread;
     private BandData bandData;
     private GpsTracker gpsTracker;
+    private String readMessage;
+    private String latitude;
+    private String longitude;
+    private String bandMessage;
+    private String pulse;
+    private String temperature;
+    private int check;
+    private boolean pubServiceCheck;
 
     final static int BT_MESSAGE_READ = 2;
     final static int BT_CONNECTING_STATUS = 3;
@@ -48,35 +56,78 @@ public class BandDataHandleService extends Service {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         bandData = BandData.getInstance();
         gpsTracker = GpsTracker.getInstance();
+        readMessage = null;
+        latitude = null;
+        longitude = null;
+        bandMessage = null;
+        pulse = null;
+        temperature = null;
+        check = 0;
+        pubServiceCheck = false;
+
+
 
         //////////////////////////////////블루투스 핸들러///////////////////////////////// 수신된 데이터를 읽어와 recieve에 써주는 메소드
         bluetoothHandler = new Handler(){
             public void handleMessage(android.os.Message msg){
                 if(msg.what == BT_MESSAGE_READ){
-                    String readMessage = null;
-                    String latitude = null;
-                    String longitude = null;
-                    String bandMessage = null;
+
                     try {
                         readMessage = new String((byte[]) msg.obj, "UTF-8");
-                        byte[] latitudeByte = Double.toString(gpsTracker.getLatitude()).getBytes("UTF-8");
-                        byte[] longitudeByte = Double.toString(gpsTracker.getLongitude()).getBytes("UTF-8");
-                        byte[] messageByte = (readMessage+"%"+latitude+":"+longitude).getBytes("UTF-8");
-                        latitude = new String(latitudeByte,"UTF-8");
-                        longitude = new String(longitudeByte,"UTF-8");
+
+                        pulse = readMessage.split("%")[1];
+                        temperature = readMessage.split("%")[0];
+                        latitude = Double.toString(gpsTracker.getLatitude());
+                        longitude = Double.toString(gpsTracker.getLongitude());
+
+                        if(latitude!=null && longitude!=null){
+                            check++;
+                            ((LoginPatientActivity)(LoginPatientActivity.context)).setGpsConnectStatus("Connect");
+                        } else {
+                            check--;
+                            ((LoginPatientActivity)(LoginPatientActivity.context)).setGpsConnectStatus("Not-Connect");
+                        }
+                        if(pulse!=null &&  temperature!=null){
+                            check++;
+                            ((LoginPatientActivity)LoginPatientActivity.context).setPulseView(pulse);
+                            ((LoginPatientActivity)LoginPatientActivity.context).setTemperatureView(temperature);
+                            ((LoginPatientActivity)(LoginPatientActivity.context)).setBandConnectStatus("Connect");
+                        } else {
+                            check--;
+                            ((LoginPatientActivity)LoginPatientActivity.context).setPulseView("-");
+                            ((LoginPatientActivity)LoginPatientActivity.context).setTemperatureView("-");
+                            ((LoginPatientActivity)(LoginPatientActivity.context)).setBandConnectStatus("Not-Connect");
+                        }
+
+                        if(check==2){   //밴드데이터와 gps수신 모두 성공적일 경우
+                            if(pubServiceCheck==false){
+                                Intent intent = new  Intent(LoginPatientActivity.context, PublishService.class);
+                                startService(intent);
+                                pubServiceCheck = true;
+                            }
+                        } else{         //하나라도 중간에 끊길경우 publish service종료
+                            if(pubServiceCheck==true){
+                                Intent intent = new  Intent(LoginPatientActivity.context, PublishService.class);
+                                stopService(intent);
+                            }
+                        }
+
+                        byte[] messageByte = (pulse+"%"+temperature+"%"+latitude+":"+longitude).getBytes("UTF-8");
                         bandMessage = new String(messageByte,"UTF-8");
 
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
 
-                    Log.e("test",bandMessage);
+                    Log.e("test","bandMessage : " + bandMessage);
+                    Log.e("test","pulse : " + pulse);
+                    Log.e("test", "temperature : " + temperature);
+                    Log.e("test","latitude : " + latitude);
+                    Log.e("test","longitude : " + longitude);
                     bandData.updateBandData(bandMessage);
 
-                    String temperature = readMessage.split("%")[0];
-                    String pulse = readMessage.split("%")[1];
-                    ((LoginPatientActivity)LoginPatientActivity.context).pulseSetText(pulse);
-                    ((LoginPatientActivity)LoginPatientActivity.context).temperatureSetText(temperature);
+
+
                 }
             }
         };
@@ -104,7 +155,7 @@ public class BandDataHandleService extends Service {
         else if(!bluetoothAdapter.isEnabled()){                 //블루투스가 안 켜져있는 경우
             Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             ((LoginPatientActivity)LoginPatientActivity.context).bluetoothActivityStart(bluetoothIntent);       //블루투스를 켠다.
-
+            ((LoginPatientActivity)LoginPatientActivity.context).setBandConnectStatus("Connect Device!");
         }else{                    //이미 켜져있는경우
             listPairedDevices();        //페어링가능 기기리스트를 가져온다.
         }
@@ -156,6 +207,9 @@ public class BandDataHandleService extends Service {
         try {
             bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(BT_UUID);
             bluetoothSocket.connect();
+            if(bluetoothSocket.isConnected()){
+                ((LoginPatientActivity)LoginPatientActivity.context).setBandConnectStatus("Connect");
+            }
 
             connectedBluetoothThread = new ConnectedBluetoothThread(bluetoothSocket);
 
@@ -203,7 +257,6 @@ public class BandDataHandleService extends Service {
                         bytes = mmInStream.available();
                         bytes = mmInStream.read(buffer, 0, bytes);
                         bluetoothHandler.obtainMessage(BT_MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-
                     }
                 } catch (IOException e) {
                     break;

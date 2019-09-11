@@ -34,7 +34,7 @@ public class BandData {
     }
     public static BandData getInstance(){
         if(bandData==null){
-            String message = "Non-Signal%Non-Signal%Non-Signal:Non-Signal";
+            String message = "-%-%-:-";
             bandData = new BandData(message);
         }
         return bandData;

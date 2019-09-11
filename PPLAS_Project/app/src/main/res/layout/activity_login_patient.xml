@@ -17,10 +17,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30sp"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30sp"
                 android:fontFamily="serif"
@@ -31,7 +32,7 @@
                 android:textStyle="bold" />
 
             <GridLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:columnCount="2"
                 android:rowCount="3">
@@ -50,7 +51,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20sp"
-                    android:width="150sp"
+                    android:width="100sp"
+                    android:gravity="center"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -69,8 +71,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10sp"
-                    android:width="150sp"
-                    android:textColor="@color/colorWhite"
+                    android:width="100sp"
+                    android:gravity="center_horizontal|center"
+                    android:textColor="@android:color/darker_gray"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -88,8 +91,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10sp"
-                    android:width="150sp"
-                    android:textColor="@color/colorWhite"
+                    android:width="100sp"
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -122,7 +126,7 @@
                 android:background="@drawable/text_view"
                 android:layerType="none"
                 android:text="NotConnect"
-                android:textColor="@color/colorWhite"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -150,36 +154,7 @@
                 android:background="@drawable/text_view"
                 android:layerType="none"
                 android:text="NotConnect"
-                android:textColor="@color/colorWhite"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/publishTest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10sp"
-                android:layout_weight="1"
-                android:text="test"
-                android:textColor="@color/colorWhite"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/publishTestButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/text_view"
-                android:layerType="none"
-                android:text="testButton"
-                android:textColor="@color/colorWhite"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>

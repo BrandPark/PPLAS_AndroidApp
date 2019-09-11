@@ -20,7 +20,6 @@ public class PublishService extends Service {
     private BandData bandData;
 
     public PublishService() {
-
     }
 
     @Override
@@ -42,8 +41,6 @@ public class PublishService extends Service {
     }
     public class GetDataThread extends Thread{
         public GetDataThread(){
-            ((LoginPatientActivity) (LoginPatientActivity.context)).publishToServer(bandData.getBandMessage());
-            Log.e("test",bandData.getBandMessage());
         }
         @Override
         public void run() {
@@ -52,6 +49,7 @@ public class PublishService extends Service {
                 try {
                     Thread.sleep(3000);
                     ((LoginPatientActivity) (LoginPatientActivity.context)).publishToServer(bandData.getBandMessage());
+                    Log.e("test","thread is alive!");
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
