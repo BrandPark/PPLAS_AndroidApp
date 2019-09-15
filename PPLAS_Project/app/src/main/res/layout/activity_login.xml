@@ -27,7 +27,7 @@
                 android:layout_marginBottom="30sp"
                 android:fontFamily="serif"
                 android:gravity="center"
-                android:text="P.P.L.A.S"
+                android:text="P.P.L.A.S."
                 android:textColor="@color/colorWhite"
                 android:textSize="44sp"
                 android:textStyle="bold" />
