@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -53,7 +54,7 @@ public class BandDataHandleService extends Service {
     final static UUID BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     public BandDataHandleService() {
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         bandData = BandData.getInstance();
         gpsTracker = GpsTracker.getInstance();
         readMessage = null;
@@ -65,6 +66,7 @@ public class BandDataHandleService extends Service {
         check = 0;
         pubServiceCheck = false;
 
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 
         //////////////////////////////////블루투스 핸들러///////////////////////////////// 수신된 데이터를 읽어와 recieve에 써주는 메소드
@@ -96,7 +98,7 @@ public class BandDataHandleService extends Service {
                             check--;
                             ((LoginPatientActivity)LoginPatientActivity.context).setPulseView("-");
                             ((LoginPatientActivity)LoginPatientActivity.context).setTemperatureView("-");
-                            ((LoginPatientActivity)(LoginPatientActivity.context)).setBandConnectStatus("Not-Connect");
+                            ((LoginPatientActivity)(LoginPatientActivity.context)).setBandConnectStatus("Check Device Connection");
                         }
 
                         if(check==2){   //밴드데이터와 gps수신 모두 성공적일 경우
@@ -152,13 +154,32 @@ public class BandDataHandleService extends Service {
         if(bluetoothAdapter == null) {                          //블루투스기능이 없는 기기인경우
             Toast.makeText(LoginPatientActivity.context, "블루투스를 지원하지 않는 기기입니다.", Toast.LENGTH_LONG).show();
         }
-        else if(!bluetoothAdapter.isEnabled()){                 //블루투스가 안 켜져있는 경우
-            Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            ((LoginPatientActivity)LoginPatientActivity.context).bluetoothActivityStart(bluetoothIntent);       //블루투스를 켠다.
-            ((LoginPatientActivity)LoginPatientActivity.context).setBandConnectStatus("Connect Device!");
-        }else{                    //이미 켜져있는경우
-            listPairedDevices();        //페어링가능 기기리스트를 가져온다.
+        else if(!bluetoothAdapter.isEnabled()){                 //블루투스가 꺼져 있는 경우
+            showDialogForBlutoothServiceSetting();
         }
+    }
+    public void showDialogForBlutoothServiceSetting() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginPatientActivity.context);
+        builder.setTitle("블루투스 서비스 비활성화");
+        builder.setMessage("앱을 사용하기 위해서는 블루투스 서비스가 필요합니다.\n"
+                + "블루투스 설정을 수정하시겠습니까?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("설정", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                ((LoginPatientActivity)LoginPatientActivity.context).bluetoothActivityStart(bluetoothIntent);       //블루투스를 켠다.
+
+            }
+        });
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
     }
 
     ////////////////////////////////////////////////////////페어링 디바이스 출력 메소드///////////////////////////////////////////

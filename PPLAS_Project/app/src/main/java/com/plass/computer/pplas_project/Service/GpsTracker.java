@@ -139,8 +139,9 @@ public class GpsTracker extends Service implements LocationListener {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         Toast.makeText(mContext,"onLocationChanged()호출\n"+
-                "latitude : "+latitude +
-                "\nlongitude : " + longitude,Toast.LENGTH_LONG).show();
+            "latitude : "+latitude +
+            "\nlongitude : " + longitude,Toast.LENGTH_LONG).show();
+        ((LoginPatientActivity)LoginPatientActivity.context).setGpsConnectStatus("Connect");
     }
 
     @Override

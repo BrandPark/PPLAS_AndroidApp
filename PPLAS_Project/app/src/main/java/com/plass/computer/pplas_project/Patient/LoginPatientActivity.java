@@ -22,11 +22,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.plass.computer.pplas_project.Login.LoginActivity;
+
 import com.plass.computer.pplas_project.R;
 import com.plass.computer.pplas_project.Service.BandDataHandleService;
-import com.plass.computer.pplas_project.Service.GpsTracker;
-import com.plass.computer.pplas_project.Service.PublishService;
 import com.plass.computer.pplas_project.common.CustomTask;
 import com.plass.computer.pplas_project.common.MqttTask;
 
@@ -79,12 +77,15 @@ public class LoginPatientActivity extends FragmentActivity {
         pulseView.setText(bandData.getPulse());
         temperatureView.setText(bandData.getTemperature());
 
-
-
         bandConnectStatus.setOnClickListener(new View.OnClickListener(){            //블루투스 연결 버튼
             @Override
             public void onClick(View v) {
-                bService.bluetoothOn();
+                if(!bService.getBluetoothAdapter().isEnabled()){        //블루투스가 꺼져있을 경우
+                    bService.bluetoothOn();
+                } else {
+                    bService.listPairedDevices();
+                }
+
             }
         });
         gpsConnectStatus.setOnClickListener(new View.OnClickListener(){             //gps연결 버튼
@@ -117,6 +118,7 @@ public class LoginPatientActivity extends FragmentActivity {
 
         Intent bServiceIntent = new Intent(context, BandDataHandleService.class);   //BandDataHandleService 실행
         bindService(bServiceIntent, mConn,context.BIND_AUTO_CREATE);
+
     }
     protected void onStop(){
         super.onStop();
@@ -125,6 +127,32 @@ public class LoginPatientActivity extends FragmentActivity {
             pBound = false;
         }
     }
+    ////////////////////////////////////////////밴드데이터 핸들 서비스 커넥션 객체////////////////////////////////
+    ServiceConnection mConn = new ServiceConnection(){
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            bService = ((BandDataHandleService.LocalBinder)service).getService();        //서비스에서 밴드로부터 데이터를 받아 객체화 시킨다.
+            nameView.setText(patientName);
+            pBound = true;
+
+            if(!bService.getBluetoothAdapter().isEnabled()) {   //블루투스가 꺼져있는 경우
+                bService.bluetoothOn();
+            } else {    //블루투스가 켜져있는 경우
+                bService.listPairedDevices();
+            }
+
+            if (!checkLocationServicesStatus()) {       //안드로이드의 위치정보가 꺼져있는 경우
+                showDialogForLocationServiceSetting();
+            }else {
+                checkRunTimePermission();                //퍼미션 체크 메소드
+            }
+        }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            pBound = false;
+        }
+    };
     //PublishService에서 호출하는 메소드
     public void publishToServer(String message) {
         try {
@@ -147,12 +175,15 @@ public class LoginPatientActivity extends FragmentActivity {
             case BT_REQUEST_ENABLE:
                 if (resultCode == RESULT_OK) { // 블루투스 활성화를 확인을 클릭하였다면
                     Toast.makeText(context, "블루투스 활성화", Toast.LENGTH_LONG).show();
-                    bService.listPairedDevices();       //페어링가능 기기목록을 가져온다.
+                    setBandConnectStatus("Connect Device!");
+                    bService.listPairedDevices();
 
                 } else if (resultCode == RESULT_CANCELED) { // 블루투스 활성화를 취소를 클릭하였다면
-                    Toast.makeText(context, "취소", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "블루투스 취소", Toast.LENGTH_LONG).show();
+                    setBandConnectStatus("NotConnect");
                 }
                 break;
+
             case GPS_ENABLE_REQUEST_CODE:
 
                 //사용자가 GPS 활성 시켰는지 검사
@@ -160,7 +191,6 @@ public class LoginPatientActivity extends FragmentActivity {
                     Log.d("@@@", "onActivityResult : GPS 활성화 되있음");
                     checkRunTimePermission();
                     return;
-
                 }
                 break;
         }
@@ -208,20 +238,7 @@ public class LoginPatientActivity extends FragmentActivity {
 
 
 
-    ////////////////////////////////////////////밴드데이터 핸들 서비스 커넥션 객체////////////////////////////////
-    ServiceConnection mConn = new ServiceConnection(){
 
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            bService = ((BandDataHandleService.LocalBinder)service).getService();        //서비스에서 밴드로부터 데이터를 받아 객체화 시킨다.
-            nameView.setText(patientName);
-            pBound = true;
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            pBound = false;
-        }
-    };
 
 
 
@@ -321,8 +338,6 @@ public class LoginPatientActivity extends FragmentActivity {
                 startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE);
                 gpsConnectStatus.setText("Connect");
                 gpsConnectStatus.setTextColor(Color.WHITE);
-
-
             }
         });
         builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {

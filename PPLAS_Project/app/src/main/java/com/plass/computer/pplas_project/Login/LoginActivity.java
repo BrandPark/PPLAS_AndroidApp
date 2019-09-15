@@ -7,7 +7,7 @@ import android.content.Intent;
 
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.view.View;
 
@@ -76,7 +76,6 @@ public class LoginActivity extends FragmentActivity {
                         finish();
                     }
                     else{
-                        Message.information(context, "알림", "관리자 로긴 성공");
                         Intent intent = new Intent(context, ManagerSettingActivity.class);
                         startActivity(intent);
                         finish();

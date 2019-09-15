@@ -13,11 +13,6 @@ public class LoadingActivity extends Activity {
     protected void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
 
-        try{
-            Thread.sleep(3000);
-        }catch(InterruptedException e){
-            e.printStackTrace();
-        }
         startActivity(new Intent(this,LoginActivity.class));
         finish();
     }

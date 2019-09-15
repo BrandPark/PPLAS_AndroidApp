@@ -48,7 +48,8 @@
                     android:layout_weight="1"
                     android:buttonTint="@color/clickedColor"
                     android:checked="true"
-                    android:text="환자"
+                    android:fontFamily="serif"
+                    android:text="Patient"
                     android:textColor="@color/colorWhite"
                     android:textColorLink="@color/colorWhite"
                     android:textStyle="bold" />
@@ -59,7 +60,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:buttonTint="@color/clickedColor"
-                    android:text="관리자"
+                    android:fontFamily="serif"
+                    android:text="Admin"
                     android:textColor="@color/colorWhite"
                     android:textStyle="bold" />
 
@@ -108,8 +110,10 @@
                     android:id="@+id/saveIDCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10sp"
                     android:buttonTint="@color/clickedColor"
-                    android:text="아이디 저장"
+                    android:fontFamily="serif"
+                    android:text="Save ID"
                     android:textColor="@color/colorWhite"
                     android:textStyle="bold" />
 
@@ -129,7 +133,7 @@
                     android:background="@drawable/login_button"
                     android:text="Login"
                     android:textColor="@color/colorWhite"
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
