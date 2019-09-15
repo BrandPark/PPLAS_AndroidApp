@@ -25,12 +25,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30sp"
+                android:fontFamily="serif"
                 android:gravity="center"
-                android:text="P.P.L.A.S."
+                android:text="P.P.L.A.S"
                 android:textColor="@color/colorWhite"
                 android:textSize="44sp"
-                android:textStyle="bold"
-                android:fontFamily="serif"/>
+                android:textStyle="bold" />
 
             <RadioGroup
                 android:id="@+id/userType"
@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10sp"
                     android:layout_weight="1"
-                    android:buttonTint="@color/colorWhite"
+                    android:buttonTint="@color/clickedColor"
                     android:checked="true"
                     android:text="환자"
                     android:textColor="@color/colorWhite"
@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:buttonTint="@color/colorWhite"
+                    android:buttonTint="@color/clickedColor"
                     android:text="관리자"
                     android:textColor="@color/colorWhite"
                     android:textStyle="bold" />
@@ -108,7 +108,7 @@
                     android:id="@+id/saveIDCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/colorWhite"
+                    android:buttonTint="@color/clickedColor"
                     android:text="아이디 저장"
                     android:textColor="@color/colorWhite"
                     android:textStyle="bold" />
@@ -126,7 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/button_login"
+                    android:background="@drawable/login_button"
                     android:text="Login"
                     android:textColor="@color/colorWhite"
                     android:textSize="18sp"

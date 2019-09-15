@@ -18,7 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoTitleBar">
-        <activity android:name=".Login.LoginActivity">
+        <activity
+            android:name=".Login.LoadingActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,6 +34,7 @@
             android:exported="true" />
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
+        <activity android:name=".Login.LoginActivity"/>
         <activity android:name=".Patient.LoginPatientActivity" />
         <activity android:name=".Manager.ManagerSettingActivity" />
         <activity android:name=".Manager.AddPatientActivity" />

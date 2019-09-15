@@ -7,4 +7,5 @@
     <color name="buttonColor">#40bfff</color>
     <color name="editTextColor">#49aae3</color>
     <color name="colorWhite">#ffffff</color>
+    <color name="clickedColor">#ffa963</color>
 </resources>
