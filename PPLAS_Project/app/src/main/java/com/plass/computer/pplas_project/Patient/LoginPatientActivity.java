@@ -2,6 +2,7 @@ package com.plass.computer.pplas_project.Patient;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,7 +33,6 @@ import com.plass.computer.pplas_project.common.MqttTask;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.io.UnsupportedEncodingException;
 import java.util.concurrent.ExecutionException;
 
 public class LoginPatientActivity extends FragmentActivity {
