@@ -65,7 +65,7 @@ public class AddPatientActivity extends FragmentActivity {
                     } else{
                         if(pw.equals(pwCh)){
                             try {
-                                String result = new CustomTask().execute(id,pw,name,resident_id,phone,"patient","join").get();
+                                String result = new CustomTask(context).execute(id,pw,name,resident_id,phone,"patient","join").get();
                                 if (result.equals("joinOK")) {            //아이디가 존재하지 않을 경우
                                     message.information(context, "알림", "회원가입이 정상적으로 이루어졌습니다.");
                                     joinID.setText("");

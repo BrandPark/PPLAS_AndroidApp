@@ -1,7 +1,11 @@
 package com.plass.computer.pplas_project.common;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.plass.computer.pplas_project.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +22,23 @@ import java.net.URL;
 public class CustomTask extends AsyncTask<String, Void, String> {
 
     private String sendMsg, recieveMsg;
+    private Context context;
+
+    ProgressDialog loadingDialog;
+
+    public CustomTask(Context context){
+        this.context = context;
+        loadingDialog = new ProgressDialog(context, R.layout.loading_ani);
+
+    }
+    @Override
+    protected void onPreExecute(){
+        loadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        loadingDialog.setMessage("로딩중입니다..");
+
+        loadingDialog.show();
+        super.onPreExecute();
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -60,5 +81,14 @@ public class CustomTask extends AsyncTask<String, Void, String> {
         }
 
         return recieveMsg;
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        loadingDialog.dismiss();
+        if(this.getStatus()== Status.RUNNING){
+            this.cancel(true);
+        }
+        super.onPostExecute(result);
     }
 }

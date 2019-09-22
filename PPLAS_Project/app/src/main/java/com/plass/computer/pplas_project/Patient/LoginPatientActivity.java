@@ -105,7 +105,7 @@ public class LoginPatientActivity extends FragmentActivity {
         mqttAndroidClient = mqttTask.getMqttClient();
 
         try {
-            String result = new CustomTask().execute(patientID,"","","","","","searchName").get();
+            String result = new CustomTask(context).execute(patientID,"","","","","","searchName").get();
 
             if(result.contains("findName=")){
                 patientName = result.split("=")[1];             //환자 이름
@@ -135,8 +135,9 @@ public class LoginPatientActivity extends FragmentActivity {
             bService = ((BandDataHandleService.LocalBinder)service).getService();        //서비스에서 밴드로부터 데이터를 받아 객체화 시킨다.
             nameView.setText(patientName);
             pBound = true;
-
-            if(!bService.getBluetoothAdapter().isEnabled()) {   //블루투스가 꺼져있는 경우
+            if(bService.getBluetoothAdapter()==null){
+                Toast.makeText(LoginPatientActivity.context, "블루투스를 지원하지 않는 기기입니다.", Toast.LENGTH_LONG).show();
+            } else if(!bService.getBluetoothAdapter().isEnabled()) {   //블루투스가 꺼져있는 경우
                 bService.bluetoothOn();
             } else {    //블루투스가 켜져있는 경우
                 bService.listPairedDevices();

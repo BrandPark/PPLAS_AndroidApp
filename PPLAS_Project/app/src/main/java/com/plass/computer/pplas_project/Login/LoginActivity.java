@@ -91,9 +91,9 @@ public class LoginActivity extends FragmentActivity {
 
             switch(typeId){
                 case R.id.adminType:    //어드민으로 로그인
-                    result = new CustomTask().execute(id,pw,"","","","admin","login").get(); break;
+                    result = new CustomTask(context).execute(id,pw,"","","","admin","login").get(); break;
                 case R.id.patientType:    //환자로 로그인
-                    result = new CustomTask().execute(id,pw,"","","","patient","login").get(); break;
+                    result = new CustomTask(context).execute(id,pw,"","","","patient","login").get(); break;
             }
 
             if(result.equals("loginOK")) {
