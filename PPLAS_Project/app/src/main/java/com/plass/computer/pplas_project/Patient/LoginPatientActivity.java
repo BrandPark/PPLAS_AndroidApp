@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.plass.computer.pplas_project.R;
 import com.plass.computer.pplas_project.Service.BandDataHandleService;
+import com.plass.computer.pplas_project.common.CustomDialog;
 import com.plass.computer.pplas_project.common.CustomTask;
 import com.plass.computer.pplas_project.common.MqttTask;
 
@@ -50,6 +51,7 @@ public class LoginPatientActivity extends FragmentActivity {
     private MqttAndroidClient mqttAndroidClient;
     private BandDataHandleService bService;
     private boolean pBound = false;
+    private CustomDialog customDialog;
 
     private BandData bandData;
 
@@ -325,8 +327,30 @@ public class LoginPatientActivity extends FragmentActivity {
 
     //여기부터는 GPS 활성화를 위한 메소드들
     private void showDialogForLocationServiceSetting() {
+        String title = "위치 서비스 비활성화";
+        String message = "앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
+                + "위치 설정을 수정하시겠습니까?";
+        View.OnClickListener positiveListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent callGPSSettingIntent
+                        = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE);
+                gpsConnectStatus.setText("Connect");
+                gpsConnectStatus.setTextColor(Color.WHITE);
+                customDialog.dismiss();
+            }
+        };
+        View.OnClickListener negativeListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                customDialog.dismiss();
+            }
+        };
+        CustomDialog customDialog = new CustomDialog(context, title,message,positiveListener,negativeListener);
+        customDialog.show();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(LoginPatientActivity.this);
+    /*    AlertDialog.Builder builder = new AlertDialog.Builder(LoginPatientActivity.this);
         builder.setTitle("위치 서비스 비활성화");
         builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
                 + "위치 설정을 수정하시겠습니까?");
@@ -347,7 +371,8 @@ public class LoginPatientActivity extends FragmentActivity {
                 dialog.cancel();
             }
         });
-        builder.create().show();
+        builder.create().show();*/
+
     }
     public boolean checkLocationServicesStatus() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);

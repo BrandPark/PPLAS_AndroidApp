@@ -1,10 +1,12 @@
 package com.plass.computer.pplas_project.Service;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,11 +15,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.plass.computer.pplas_project.Login.LoginActivity;
 import com.plass.computer.pplas_project.Patient.BandData;
 import com.plass.computer.pplas_project.Patient.LoginPatientActivity;
+import com.plass.computer.pplas_project.common.CustomDialog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +52,7 @@ public class BandDataHandleService extends Service {
     private String temperature;
     private int check;
     private boolean pubServiceCheck;
+    private CustomDialog customDialog;
 
     final static int BT_MESSAGE_READ = 2;
     final static int BT_CONNECTING_STATUS = 3;
@@ -155,12 +160,34 @@ public class BandDataHandleService extends Service {
             Toast.makeText(LoginPatientActivity.context, "블루투스를 지원하지 않는 기기입니다.", Toast.LENGTH_LONG).show();
         }
         else if(!bluetoothAdapter.isEnabled()){                 //블루투스가 꺼져 있는 경우
-            showDialogForBlutoothServiceSetting();
+            showDialogForBlutoothServiceSetting(LoginPatientActivity.context);
         }
     }
-    public void showDialogForBlutoothServiceSetting() {
+    public void showDialogForBlutoothServiceSetting(Context context) {
+        String title = "블루투스 서비스 비활성화";
+        String message = "앱을 사용하기 위해서는 블루투스 서비스가 필요합니다.\n"
+                + "블루투스 설정을 수정하시겠습니까?";
+        View.OnClickListener positiveListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                ((LoginPatientActivity)LoginPatientActivity.context).bluetoothActivityStart(bluetoothIntent);       //블루투스를 켠다.
+                customDialog.dismiss();
+            }
+        };
+        View.OnClickListener negativeListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                customDialog.dismiss();
+            }
+        };
+        CustomDialog customDialog = new CustomDialog(context, title,message,positiveListener,negativeListener);
+        customDialog.show();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(LoginPatientActivity.context);
+
+
+
+       /* AlertDialog.Builder builder = new AlertDialog.Builder(LoginPatientActivity.context);
         builder.setTitle("블루투스 서비스 비활성화");
         builder.setMessage("앱을 사용하기 위해서는 블루투스 서비스가 필요합니다.\n"
                 + "블루투스 설정을 수정하시겠습니까?");
@@ -168,8 +195,7 @@ public class BandDataHandleService extends Service {
         builder.setPositiveButton("설정", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                ((LoginPatientActivity)LoginPatientActivity.context).bluetoothActivityStart(bluetoothIntent);       //블루투스를 켠다.
+
 
             }
         });
@@ -179,7 +205,7 @@ public class BandDataHandleService extends Service {
                 dialog.cancel();
             }
         });
-        builder.create().show();
+        builder.create().show();*/
     }
 
     ////////////////////////////////////////////////////////페어링 디바이스 출력 메소드///////////////////////////////////////////
