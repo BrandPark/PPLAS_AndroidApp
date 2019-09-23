@@ -42,8 +42,8 @@ public class CustomTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
-        String jspUrl = "http://192.168.78.1:8080/MGJSP_Book/PPLAS/add.jsp";
-        //String jspUrl = "http://116.126.97.126:8080/PPLAS_MQTT-WebServer/add.jsp";
+       // String jspUrl = "http://192.168.78.1:8080/MGJSP_Book/PPLAS/add.jsp";
+        String jspUrl = "http://116.126.97.126:8080/PPLAS_MQTT-WebServer/add.jsp";
         //String jspUrl = "http://113.198.84.52:8080/PPLAS_MQTT-WebServer/add.jsp";
         HttpURLConnection conn=null;
         try {

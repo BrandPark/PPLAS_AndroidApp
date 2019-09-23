@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -328,7 +329,7 @@ public class LoginPatientActivity extends FragmentActivity {
     //여기부터는 GPS 활성화를 위한 메소드들
     private void showDialogForLocationServiceSetting() {
         String title = "위치 서비스 비활성화";
-        String message = "앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
+        String message = "앱을 사용하기 위해서는\n위치 서비스가 필요합니다.\n"
                 + "위치 설정을 수정하시겠습니까?";
         View.OnClickListener positiveListener = new View.OnClickListener(){
             @Override
@@ -347,7 +348,9 @@ public class LoginPatientActivity extends FragmentActivity {
                 customDialog.dismiss();
             }
         };
-        CustomDialog customDialog = new CustomDialog(context, title,message,positiveListener,negativeListener);
+        customDialog = new CustomDialog(context, title,message,positiveListener,negativeListener);
+        customDialog.setCancelable(false);
+        customDialog.getWindow().setGravity(Gravity.CENTER);
         customDialog.show();
 
     /*    AlertDialog.Builder builder = new AlertDialog.Builder(LoginPatientActivity.this);

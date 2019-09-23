@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -106,7 +107,7 @@ public class BandDataHandleService extends Service {
                             ((LoginPatientActivity)(LoginPatientActivity.context)).setBandConnectStatus("Check Device Connection");
                         }
 
-                        if(check==2){   //밴드데이터와 gps수신 모두 성공적일 경우
+                        /*if(check==2){   //밴드데이터와 gps수신 모두 성공적일 경우
                             if(pubServiceCheck==false){
                                 Intent intent = new  Intent(LoginPatientActivity.context, PublishService.class);
                                 startService(intent);
@@ -117,7 +118,7 @@ public class BandDataHandleService extends Service {
                                 Intent intent = new  Intent(LoginPatientActivity.context, PublishService.class);
                                 stopService(intent);
                             }
-                        }
+                        }*/
 
                         byte[] messageByte = (pulse+"%"+temperature+"%"+latitude+":"+longitude).getBytes("UTF-8");
                         bandMessage = new String(messageByte,"UTF-8");
@@ -165,7 +166,7 @@ public class BandDataHandleService extends Service {
     }
     public void showDialogForBlutoothServiceSetting(Context context) {
         String title = "블루투스 서비스 비활성화";
-        String message = "앱을 사용하기 위해서는 블루투스 서비스가 필요합니다.\n"
+        String message = "앱을 사용하기 위해서는\n블루투스 서비스가 필요합니다.\n"
                 + "블루투스 설정을 수정하시겠습니까?";
         View.OnClickListener positiveListener = new View.OnClickListener(){
             @Override
@@ -181,10 +182,10 @@ public class BandDataHandleService extends Service {
                 customDialog.dismiss();
             }
         };
-        CustomDialog customDialog = new CustomDialog(context, title,message,positiveListener,negativeListener);
+        customDialog = new CustomDialog(context, title,message,positiveListener,negativeListener);
+        customDialog.setCancelable(false);
+        customDialog.getWindow().setGravity(Gravity.CENTER);
         customDialog.show();
-
-
 
 
        /* AlertDialog.Builder builder = new AlertDialog.Builder(LoginPatientActivity.context);
@@ -293,7 +294,7 @@ public class BandDataHandleService extends Service {
         }
 
         public void run() {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[16];
             int bytes;
 
             while (true) {

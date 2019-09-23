@@ -20,15 +20,15 @@
             android:layout_weight="1"
             android:text="TextView"
             android:textAlignment="textEnd"
-            android:textSize="30sp"
+            android:textColor="@color/colorWhite"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/dialogImage"
             android:layout_width="0sp"
             android:layout_height="80sp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/warning_mark" />
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -37,9 +37,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20sp"
+        android:background="@drawable/text_view"
         android:text="TextView"
         android:textAlignment="center"
-        android:textSize="30sp" />
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -55,9 +57,9 @@
             android:layout_marginRight="0dp"
             android:layout_weight="1"
             android:background="@drawable/login_button"
-            android:text="Accept"
+            android:text="YES"
             android:textColor="@color/colorWhite"
-            android:textSize="24sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Space
@@ -72,9 +74,9 @@
             android:layout_marginRight="10sp"
             android:layout_weight="1"
             android:background="@drawable/login_button"
-            android:text="Deny"
+            android:text="NO"
             android:textColor="@color/colorWhite"
-            android:textSize="24sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
 

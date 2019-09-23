@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.plass.computer.pplas_project.R;
@@ -24,6 +25,7 @@ public class CustomDialog extends Dialog {
     private TextView dialogMessage;
     private Button acceptButton;
     private Button denyButton;
+    private ImageView dialogImage;
     private View.OnClickListener positiveListener;
     private View.OnClickListener negativeListener;
 
@@ -34,6 +36,7 @@ public class CustomDialog extends Dialog {
         this.message = message;
         this.positiveListener = positiveListener;
         this.negativeListener = negativeListener;
+
     }
 
     @Override
@@ -52,11 +55,16 @@ public class CustomDialog extends Dialog {
         dialogMessage = (TextView)findViewById(R.id.dialogMessage);
         acceptButton = (Button)findViewById(R.id.acceptButton);
         denyButton = (Button)findViewById(R.id.denyButton);
+        dialogImage = (ImageView)findViewById(R.id.dialogImage);
 
         dialogTitle.setText(title);
         dialogMessage.setText(message);
         acceptButton.setOnClickListener(positiveListener);
         denyButton.setOnClickListener(negativeListener);
-
+        dialogImage.setImageResource(R.drawable.warning_mark);
     }
+   /* @Override
+    public void dismiss(){
+
+    }*/
 }
